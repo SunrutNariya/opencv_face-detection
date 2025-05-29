@@ -11,11 +11,15 @@ out_count = 0
 # Store previous centroids
 prev_centroids = []
 
-# Line position (center)
-line_position = 320  # Assuming 640x480 resolution
+# Line position (center for 1280x720 resolution)
+line_position = 640
 
 # Start camera
 cap = cv2.VideoCapture(0)
+
+# Set camera resolution to 1280x720
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
 def get_centroid(x, y, w, h):
     return (int(x + w/2), int(y + h/2))
@@ -25,7 +29,7 @@ while cap.isOpened():
     if not ret:
         break
 
-    frame = cv2.resize(frame, (640, 480))
+    frame = cv2.resize(frame, (1280, 720))  # Match resolution
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
@@ -48,12 +52,12 @@ while cap.isOpened():
     prev_centroids = new_centroids
 
     # Draw center line
-    cv2.line(frame, (line_position, 0), (line_position, 480), (255, 0, 255), 2)
+    cv2.line(frame, (line_position, 0), (line_position, 720), (255, 0, 255), 2)
 
     # Display counters
-    cv2.rectangle(frame, (0, 430), (640, 480), (0, 0, 0), -1)
-    cv2.putText(frame, f"IN: {in_count}", (400, 470), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-    cv2.putText(frame, f"OUT: {out_count}", (30, 470), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+    cv2.rectangle(frame, (0, 670), (1280, 720), (0, 0, 0), -1)
+    cv2.putText(frame, f"IN: {in_count}", (1000, 710), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+    cv2.putText(frame, f"OUT: {out_count}", (30, 710), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     cv2.imshow("People Counter", frame)
 
@@ -63,5 +67,3 @@ while cap.isOpened():
 
 cap.release()
 cv2.destroyAllWindows()
-
-
